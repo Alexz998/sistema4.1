@@ -13,7 +13,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001'],
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://sistema-gestao-financeira.vercel.app']
+    : ['http://localhost:3000', 'http://localhost:3001'],
   credentials: true
 }));
 app.use(express.json());
@@ -705,7 +707,8 @@ app.get('/api/dashboard', auth, async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5001;
+// Iniciar servidor
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 }); 
