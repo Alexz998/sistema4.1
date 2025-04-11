@@ -13,9 +13,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://sistema-gestao-financeira.vercel.app']
-    : ['http://localhost:3000', 'http://localhost:3001'],
+  origin: ['https://sistema-gestao-financeira-ury3.vercel.app', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 app.use(express.json());
