@@ -15,12 +15,9 @@ Dev - SistF.rar
 __pycache__/
 *.py[cod]
 *$py.class
-
-# C extensions
 *.so
-
-# Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -32,10 +29,29 @@ lib64/
 parts/
 sdist/
 var/
-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Virtual Environment
+venv/
+ENV/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
 
 # PyInstaller
 *.manifest
@@ -61,7 +77,6 @@ coverage.xml
 *.pot
 
 # Django stuff:
-*.log
 local_settings.py
 
 # Flask stuff:
@@ -92,9 +107,6 @@ celerybeat-schedule
 # Environments
 .env
 .venv
-env/
-venv/
-ENV/
 env.bak/
 venv.bak/
 
@@ -110,12 +122,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
 
 # Sistema específico
 *.db
