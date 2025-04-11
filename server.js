@@ -7,6 +7,8 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const { format } = require('date-fns');
 const ptBR = require('date-fns/locale/pt-BR');
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -15,13 +17,13 @@ const app = express();
 app.use(cors({
   origin: ['https://sistema-gestao-financeira-ury3.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type'],
   credentials: true
 }));
 app.use(express.json());
 
 // Conexão com o MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/sistema-financeiro', {
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/sistema_financeiro', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
@@ -123,7 +125,7 @@ app.get('/api/auth/me', auth, async (req, res) => {
 });
 
 // Rotas para Clientes (protegidas)
-app.post('/api/clientes', auth, async (req, res) => {
+app.post('/api/clientes', async (req, res) => {
   try {
     const cliente = new Cliente(req.body);
     await cliente.save();
@@ -133,7 +135,7 @@ app.post('/api/clientes', auth, async (req, res) => {
   }
 });
 
-app.get('/api/clientes', auth, async (req, res) => {
+app.get('/api/clientes', async (req, res) => {
   try {
     const clientes = await Cliente.find().sort({ nome: 1 });
     res.json(clientes);
@@ -142,7 +144,7 @@ app.get('/api/clientes', auth, async (req, res) => {
   }
 });
 
-app.get('/api/clientes/:id', auth, async (req, res) => {
+app.get('/api/clientes/:id', async (req, res) => {
   try {
     const cliente = await Cliente.findById(req.params.id);
     if (!cliente) {
@@ -154,7 +156,7 @@ app.get('/api/clientes/:id', auth, async (req, res) => {
   }
 });
 
-app.put('/api/clientes/:id', auth, async (req, res) => {
+app.put('/api/clientes/:id', async (req, res) => {
   try {
     const cliente = await Cliente.findByIdAndUpdate(
       req.params.id,
@@ -170,7 +172,7 @@ app.put('/api/clientes/:id', auth, async (req, res) => {
   }
 });
 
-app.delete('/api/clientes/:id', auth, async (req, res) => {
+app.delete('/api/clientes/:id', async (req, res) => {
   try {
     const cliente = await Cliente.findByIdAndDelete(req.params.id);
     if (!cliente) {
@@ -183,7 +185,7 @@ app.delete('/api/clientes/:id', auth, async (req, res) => {
 });
 
 // Rotas para Vendas (protegidas)
-app.post('/api/vendas', auth, async (req, res) => {
+app.post('/api/vendas', async (req, res) => {
   try {
     const vendaData = {
       ...req.body,
@@ -213,7 +215,7 @@ app.post('/api/vendas', auth, async (req, res) => {
   }
 });
 
-app.get('/api/vendas', auth, async (req, res) => {
+app.get('/api/vendas', async (req, res) => {
   try {
     const vendas = await Venda.find()
       .populate('itens.produto', 'nome preco')
@@ -225,7 +227,7 @@ app.get('/api/vendas', auth, async (req, res) => {
   }
 });
 
-app.put('/api/vendas/:id', auth, async (req, res) => {
+app.put('/api/vendas/:id', async (req, res) => {
   try {
     const vendaData = {
       ...req.body,
@@ -263,7 +265,7 @@ app.put('/api/vendas/:id', auth, async (req, res) => {
   }
 });
 
-app.delete('/api/vendas/:id', auth, async (req, res) => {
+app.delete('/api/vendas/:id', async (req, res) => {
   try {
     const venda = await Venda.findByIdAndDelete(req.params.id);
     if (!venda) {
@@ -276,7 +278,7 @@ app.delete('/api/vendas/:id', auth, async (req, res) => {
 });
 
 // Rotas para Despesas (protegidas)
-app.post('/api/despesas', auth, async (req, res) => {
+app.post('/api/despesas', async (req, res) => {
   try {
     console.log('=== INÍCIO DA REQUISIÇÃO POST /api/despesas ===');
     console.log('Dados recebidos:', JSON.stringify(req.body, null, 2));
@@ -345,7 +347,7 @@ app.post('/api/despesas', auth, async (req, res) => {
   }
 });
 
-app.get('/api/despesas', auth, async (req, res) => {
+app.get('/api/despesas', async (req, res) => {
   try {
     const despesas = await Despesa.find();
     res.json(despesas);
@@ -355,7 +357,7 @@ app.get('/api/despesas', auth, async (req, res) => {
 });
 
 // Rota para excluir despesa
-app.delete('/api/despesas/:id', auth, async (req, res) => {
+app.delete('/api/despesas/:id', async (req, res) => {
   try {
     console.log('Recebendo requisição para excluir despesa');
     console.log('ID da despesa:', req.params.id);
@@ -385,7 +387,7 @@ app.delete('/api/despesas/:id', auth, async (req, res) => {
 });
 
 // Rotas para Produtos (protegidas)
-app.post('/api/produtos', auth, async (req, res) => {
+app.post('/api/produtos', async (req, res) => {
   try {
     const produto = new Produto(req.body);
     await produto.save();
@@ -395,7 +397,7 @@ app.post('/api/produtos', auth, async (req, res) => {
   }
 });
 
-app.get('/api/produtos', auth, async (req, res) => {
+app.get('/api/produtos', async (req, res) => {
   try {
     const produtos = await Produto.find().sort({ nome: 1 });
     res.json(produtos);
@@ -404,7 +406,7 @@ app.get('/api/produtos', auth, async (req, res) => {
   }
 });
 
-app.put('/api/produtos/:id', auth, async (req, res) => {
+app.put('/api/produtos/:id', async (req, res) => {
   try {
     const produto = await Produto.findByIdAndUpdate(
       req.params.id,
@@ -420,7 +422,7 @@ app.put('/api/produtos/:id', auth, async (req, res) => {
   }
 });
 
-app.delete('/api/produtos/:id', auth, async (req, res) => {
+app.delete('/api/produtos/:id', async (req, res) => {
   try {
     const produto = await Produto.findByIdAndDelete(req.params.id);
     if (!produto) {
@@ -433,7 +435,7 @@ app.delete('/api/produtos/:id', auth, async (req, res) => {
 });
 
 // Rotas para Configurações (protegidas)
-app.get('/api/config/logo', auth, async (req, res) => {
+app.get('/api/config/logo', async (req, res) => {
   try {
     let config = await Config.findOne();
     if (!config) {
@@ -447,7 +449,7 @@ app.get('/api/config/logo', auth, async (req, res) => {
   }
 });
 
-app.post('/api/config/logo', auth, multer({ storage: multer.memoryStorage() }).single('logo'), async (req, res) => {
+app.post('/api/config/logo', multer({ storage: multer.memoryStorage() }).single('logo'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'Nenhum arquivo enviado' });
@@ -653,7 +655,7 @@ app.get('/api/vendas/produtos/mensais/:mes/:ano', async (req, res) => {
 });
 
 // Rota para Dashboard
-app.get('/api/dashboard', auth, async (req, res) => {
+app.get('/api/dashboard', async (req, res) => {
   try {
     console.log('Iniciando busca de dados da dashboard...');
 
