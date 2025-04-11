@@ -1,71 +1,60 @@
-# Sistema F 1.0
+# Sistema Financeiro
 
-Sistema de gerenciamento desenvolvido em Python com Flask.
+Sistema de gerenciamento financeiro desenvolvido com React, Node.js e MongoDB.
 
-## Requisitos
+## Configuração do Ambiente
 
-- Python 3.8 ou superior
-- pip (gerenciador de pacotes Python)
+### Pré-requisitos
+- Node.js (versão 14 ou superior)
+- MongoDB
+- Git
 
-## Instalação
+### Instalação
 
 1. Clone o repositório:
 ```bash
-git clone [URL_DO_REPOSITÓRIO]
-cd SistF-1.0
+git clone https://github.com/seu-usuario/sistema-financeiro.git
+cd sistema-financeiro
 ```
 
-2. Crie um ambiente virtual:
+2. Instale as dependências do servidor:
 ```bash
-python -m venv venv
+npm install
 ```
 
-3. Ative o ambiente virtual:
-- Windows:
+3. Instale as dependências do cliente:
 ```bash
-.\venv\Scripts\activate
-```
-- Linux/Mac:
-```bash
-source venv/bin/activate
+cd client
+npm install
+cd ..
 ```
 
-4. Instale as dependências:
-```bash
-pip install -r requirements.txt
+4. Configure as variáveis de ambiente:
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+```
+MONGODB_URI=sua_uri_do_mongodb
+JWT_SECRET=seu_secret_jwt
+EMAIL_USER=seu_email
+EMAIL_PASS=sua_senha
 ```
 
-## Configuração
+## Deploy no Vercel
 
-1. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-```
-FLASK_APP=app.py
-FLASK_ENV=development
-```
-
-## Executando o Projeto
-
-1. Com o ambiente virtual ativado, execute:
-```bash
-flask run
-```
-
-2. Acesse o sistema em: http://localhost:5000
+1. Faça login na sua conta do Vercel
+2. Importe o repositório do GitHub
+3. Configure as variáveis de ambiente no painel do Vercel
+4. O deploy será feito automaticamente após cada push para o repositório
 
 ## Estrutura do Projeto
 
 ```
-SistF-1.0/
-├── app/
-│   ├── __init__.py
-│   ├── models/
-│   ├── routes/
-│   └── templates/
-├── venv/
-├── .env
-├── .gitignore
-├── requirements.txt
-└── README.md
+sistema-financeiro/
+├── client/                 # Frontend React
+├── models/                 # Modelos do MongoDB
+├── routes/                 # Rotas da API
+├── server.js              # Servidor Node.js
+├── vercel.json            # Configuração do Vercel
+└── package.json           # Dependências do servidor
 ```
 
 ## Contribuição

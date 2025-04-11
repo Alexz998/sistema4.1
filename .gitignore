@@ -3,8 +3,13 @@ Output/
 mongodb.msi 
 # Dependencies 
 node_modules/ 
+client/node_modules/
 # Env 
-.env 
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Arquivos de instalação
 Instalaveis/*.msi
@@ -19,6 +24,7 @@ __pycache__/
 .Python
 env/
 build/
+client/build/
 develop-eggs/
 dist/
 downloads/
@@ -126,3 +132,12 @@ venv.bak/
 # Sistema específico
 *.db
 *.sqlite3
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos temporários
+*.tmp
+*.temp

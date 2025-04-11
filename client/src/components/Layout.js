@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Sistema F
+            Sistema Financeiro
           </Typography>
           <Button 
             color="inherit" 
@@ -33,6 +33,14 @@ const Layout = ({ children }) => {
             sx={{ mr: 2 }}
           >
             Despesas
+          </Button>
+          <Button 
+            color="inherit" 
+            component={Link} 
+            to="/produtos"
+            sx={{ mr: 2 }}
+          >
+            Produtos
           </Button>
           <Button 
             color="inherit" 
