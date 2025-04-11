@@ -1,0 +1,12 @@
+# Arquivos grandes 
+Output/ 
+mongodb.msi 
+# Dependencies 
+node_modules/ 
+# Env 
+.env 
+
+# Arquivos de instalação
+Instalaveis/*.msi
+Instalaveis/*.exe
+Dev - SistF.rar

@@ -1,0 +1,34 @@
+geometry:
+  - margin=2.5cm
+  - top=2.5cm
+  - bottom=2.5cm
+  - left=2.5cm
+  - right=2.5cm
+
+documentclass: article
+classoption: twoside
+
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[LE,RO]{\thepage}
+  - \fancyhead[RE,LO]{Sistema de Gestão Financeira}
+  - \fancyfoot[C]{}
+  - \usepackage{tocloft}
+  - \renewcommand{\cftoftermnum}{\quad}
+  - \renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+  - \usepackage{hyperref}
+  - \hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue}
+  - \usepackage{graphicx}
+  - \usepackage{xcolor}
+  - \definecolor{azul}{RGB}{0,90,160}
+  - \usepackage{titlesec}
+  - \titleformat{\section}{\Large\bfseries\color{azul}}{\thesection}{1em}{}
+  - \titleformat{\subsection}{\large\bfseries\color{azul}}{\thesubsection}{1em}{}
+  - \titleformat{\subsubsection}{\bfseries\color{azul}}{\thesubsubsection}{1em}{}
+
+toc: true
+toc-depth: 3
+number-sections: true
+fontsize: 11pt
+linestretch: 1.2 
