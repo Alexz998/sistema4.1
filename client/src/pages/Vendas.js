@@ -26,7 +26,6 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Checkbox,
   InputAdornment
 } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
@@ -45,7 +44,7 @@ import { toast } from 'react-toastify';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
-import { formatarMoeda, formatarNumero, formatarQuantidade } from '../utils/formatadores';
+import { formatarMoeda, formatarQuantidade } from '../utils/formatadores';
 
 const API_URL = 'http://localhost:5002/api';
 
