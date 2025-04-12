@@ -1,61 +1,31 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
+import { Box, AppBar, Toolbar, Typography, Container } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-const Layout = ({ children }) => {
+const Main = styled('main')(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  marginTop: theme.spacing(8),
+}));
+
+function Layout() {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <AppBar position="static">
+    <Box sx={{ display: 'flex' }}>
+      <AppBar position="fixed">
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Sistema Financeiro
+            Sistema F 1.0
           </Typography>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/"
-            sx={{ mr: 2 }}
-          >
-            Dashboard
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/vendas"
-            sx={{ mr: 2 }}
-          >
-            Vendas
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/despesas"
-            sx={{ mr: 2 }}
-          >
-            Despesas
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/produtos"
-            sx={{ mr: 2 }}
-          >
-            Produtos
-          </Button>
-          <Button 
-            color="inherit" 
-            component={Link} 
-            to="/configuracoes"
-          >
-            Configurações
-          </Button>
         </Toolbar>
       </AppBar>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        {children}
-      </Box>
+      <Main>
+        <Container maxWidth="lg">
+          <Outlet />
+        </Container>
+      </Main>
     </Box>
   );
-};
+}
 
 export default Layout; 

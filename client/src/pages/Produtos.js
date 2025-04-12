@@ -1,37 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Grid,
-  Paper,
-  Typography,
+  Box,
   Button,
-  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  Box,
+  TextField,
+  DataGrid,
   IconButton,
-  Tooltip
+  Typography,
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-
-const API_URL = 'http://localhost:5002/api';
 
 function Produtos() {
   const [produtos, setProdutos] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [editingProduto, setEditingProduto] = useState(null);
-  const [formData, setFormData] = useState({
+  const [openDialog, setOpenDialog] = useState(false);
+  const [produtoAtual, setProdutoAtual] = useState({
     nome: '',
-    descricao: '',
     preco: '',
-    estoque: '',
-    categoria: ''
+    quantidade: '',
   });
 
   useEffect(() => {
@@ -40,220 +29,136 @@ function Produtos() {
 
   const fetchProdutos = async () => {
     try {
-      const response = await axios.get(`${API_URL}/produtos`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      });
+      const response = await axios.get('http://localhost:5000/api/produtos');
       setProdutos(response.data);
     } catch (error) {
-      console.error('Erro ao carregar produtos:', error);
-      toast.error('Erro ao carregar produtos');
+      console.error('Erro ao buscar produtos:', error);
     }
   };
 
-  const handleOpen = () => {
-    setEditingProduto(null);
-    setFormData({
-      nome: '',
-      descricao: '',
-      preco: '',
-      estoque: '',
-      categoria: ''
-    });
-    setOpen(true);
+  const handleOpenDialog = (produto = null) => {
+    if (produto) {
+      setProdutoAtual(produto);
+    } else {
+      setProdutoAtual({
+        nome: '',
+        preco: '',
+        quantidade: '',
+      });
+    }
+    setOpenDialog(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-    setEditingProduto(null);
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (editingProduto) {
-        await axios.put(`${API_URL}/produtos/${editingProduto._id}`, formData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        toast.success('Produto atualizado com sucesso!');
+      if (produtoAtual._id) {
+        await axios.put(`http://localhost:5000/api/produtos/${produtoAtual._id}`, produtoAtual);
       } else {
-        await axios.post(`${API_URL}/produtos`, formData, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        toast.success('Produto cadastrado com sucesso!');
+        await axios.post('http://localhost:5000/api/produtos', produtoAtual);
       }
-      handleClose();
       fetchProdutos();
+      handleCloseDialog();
     } catch (error) {
       console.error('Erro ao salvar produto:', error);
-      toast.error(error.response?.data?.message || 'Erro ao salvar produto');
     }
   };
 
-  const handleEdit = (produto) => {
-    setEditingProduto(produto);
-    setFormData({
-      nome: produto.nome,
-      descricao: produto.descricao,
-      preco: produto.preco,
-      estoque: produto.estoque,
-      categoria: produto.categoria
-    });
-    setOpen(true);
-  };
-
-  const handleDelete = async (produto) => {
-    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
-      try {
-        await axios.delete(`${API_URL}/produtos/${produto._id}`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-          },
-        });
-        toast.success('Produto excluído com sucesso!');
-        fetchProdutos();
-      } catch (error) {
-        console.error('Erro ao excluir produto:', error);
-        toast.error(error.response?.data?.message || 'Erro ao excluir produto');
-      }
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/produtos/${id}`);
+      fetchProdutos();
+    } catch (error) {
+      console.error('Erro ao deletar produto:', error);
     }
   };
 
   const columns = [
     { field: 'nome', headerName: 'Nome', width: 200 },
-    { field: 'descricao', headerName: 'Descrição', width: 300 },
     { field: 'preco', headerName: 'Preço', width: 130 },
-    { field: 'estoque', headerName: 'Estoque', width: 130 },
-    { field: 'categoria', headerName: 'Categoria', width: 150 },
+    { field: 'quantidade', headerName: 'Quantidade', width: 130 },
     {
       field: 'acoes',
       headerName: 'Ações',
-      width: 120,
+      width: 150,
       renderCell: (params) => (
         <Box>
-          <Tooltip title="Editar">
-            <IconButton onClick={() => handleEdit(params.row)}>
-              <EditIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Excluir">
-            <IconButton onClick={() => handleDelete(params.row)}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          <IconButton onClick={() => handleOpenDialog(params.row)}>
+            <EditIcon />
+          </IconButton>
+          <IconButton onClick={() => handleDelete(params.row._id)}>
+            <DeleteIcon />
+          </IconButton>
         </Box>
       ),
     },
   ];
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h4">Produtos</Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={handleOpen}
-          >
-            Novo Produto
-          </Button>
-        </Box>
-      </Grid>
+    <Box>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Typography variant="h4">Produtos</Typography>
+        <Button variant="contained" onClick={() => handleOpenDialog()}>
+          Adicionar Produto
+        </Button>
+      </Box>
 
-      <Grid item xs={12}>
-        <Paper sx={{ height: 400, width: '100%' }}>
-          <DataGrid
-            rows={produtos}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            getRowId={(row) => row._id}
-          />
-        </Paper>
-      </Grid>
+      <DataGrid
+        rows={produtos}
+        columns={columns}
+        getRowId={(row) => row._id}
+        pageSize={5}
+        rowsPerPageOptions={[5]}
+        autoHeight
+      />
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{editingProduto ? 'Editar Produto' : 'Novo Produto'}</DialogTitle>
-        <DialogContent>
-          <Grid container spacing={2} sx={{ mt: 1 }}>
-            <Grid item xs={12}>
-              <TextField
-                label="Nome"
-                name="nome"
-                value={formData.nome}
-                onChange={handleChange}
-                fullWidth
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Descrição"
-                name="descricao"
-                multiline
-                rows={2}
-                value={formData.descricao}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Preço"
-                name="preco"
-                type="number"
-                value={formData.preco}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Estoque"
-                name="estoque"
-                type="number"
-                value={formData.estoque}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Categoria"
-                name="categoria"
-                value={formData.categoria}
-                onChange={handleChange}
-                required
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            {editingProduto ? 'Atualizar' : 'Salvar'}
-          </Button>
-        </DialogActions>
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>
+          {produtoAtual._id ? 'Editar Produto' : 'Adicionar Produto'}
+        </DialogTitle>
+        <form onSubmit={handleSubmit}>
+          <DialogContent>
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Nome"
+              fullWidth
+              value={produtoAtual.nome}
+              onChange={(e) => setProdutoAtual({ ...produtoAtual, nome: e.target.value })}
+              required
+            />
+            <TextField
+              margin="dense"
+              label="Preço"
+              type="number"
+              fullWidth
+              value={produtoAtual.preco}
+              onChange={(e) => setProdutoAtual({ ...produtoAtual, preco: e.target.value })}
+              required
+            />
+            <TextField
+              margin="dense"
+              label="Quantidade"
+              type="number"
+              fullWidth
+              value={produtoAtual.quantidade}
+              onChange={(e) => setProdutoAtual({ ...produtoAtual, quantidade: e.target.value })}
+              required
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancelar</Button>
+            <Button type="submit" variant="contained">
+              Salvar
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
-    </Grid>
+    </Box>
   );
 }
 
