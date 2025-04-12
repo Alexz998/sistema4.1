@@ -7,10 +7,10 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  DataGrid,
   IconButton,
   Typography,
 } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
 
