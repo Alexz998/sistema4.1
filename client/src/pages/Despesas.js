@@ -52,7 +52,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import GerenciarCategorias from '../components/GerenciarCategorias';
-import { formatarMoeda, formatarQuantidade } from '../utils/formatadores';
+import { formatarMoeda, formatarNumero, formatarQuantidade } from '../utils/formatadores';
 
 const FORMAS_PAGAMENTO = [
   'Dinheiro',
@@ -63,7 +63,9 @@ const FORMAS_PAGAMENTO = [
 ];
 
 function Despesas() {
-  const { despesas, isLoading, addDespesa, updateDespesa, deleteDespesa } = useDespesas();
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const { despesas, isLoading, error, addDespesa, updateDespesa, deleteDespesa } = useDespesas(page, limit);
   const { categorias, atualizarCategorias } = useCategorias();
   const [open, setOpen] = useState(false);
   const [editingDespesa, setEditingDespesa] = useState(null);

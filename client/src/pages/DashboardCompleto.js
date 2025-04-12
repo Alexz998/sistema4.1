@@ -4,6 +4,8 @@ import {
   Grid,
   Paper,
   Typography,
+  Card,
+  CardContent,
   LinearProgress,
   Button,
   TextField,
@@ -17,12 +19,15 @@ import {
   Tooltip,
 } from '@mui/material';
 import {
+  TrendingUp as TrendingUpIcon,
+  TrendingDown as TrendingDownIcon,
   Download as DownloadIcon,
   Edit as EditIcon,
 } from '@mui/icons-material';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { format } from 'date-fns';
+import { format, parseISO, isWithinInterval } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import * as XLSX from 'xlsx';

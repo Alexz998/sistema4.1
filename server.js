@@ -15,9 +15,9 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['https://sistema4-ngeq.vercel.app', 'http://localhost:3000'],
+  origin: ['https://sistema-gestao-financeira-ury3.vercel.app', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type'],
   credentials: true
 }));
 app.use(express.json());
@@ -710,7 +710,7 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 // Iniciar servidor
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 }); 
